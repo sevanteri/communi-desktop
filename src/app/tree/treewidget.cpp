@@ -99,19 +99,19 @@ TreeWidget::TreeWidget(QWidget* parent) : QTreeWidget(parent)
 #endif
 
     QShortcut* shortcut = new QShortcut(this);
-    shortcut->setKey(QKeySequence(navigate.arg("Up")));
+    shortcut->setKey(QKeySequence(navigate.arg("K")));
     connect(shortcut, SIGNAL(activated()), this, SLOT(moveToPrevItem()));
 
     shortcut = new QShortcut(this);
-    shortcut->setKey(QKeySequence(navigate.arg("Down")));
+    shortcut->setKey(QKeySequence(navigate.arg("J")));
     connect(shortcut, SIGNAL(activated()), this, SLOT(moveToNextItem()));
 
     shortcut = new QShortcut(this);
-    shortcut->setKey(QKeySequence(nextActive.arg("Up")));
+    shortcut->setKey(QKeySequence(nextActive.arg("K")));
     connect(shortcut, SIGNAL(activated()), this, SLOT(moveToPrevActiveItem()));
 
     shortcut = new QShortcut(this);
-    shortcut->setKey(QKeySequence(nextActive.arg("Down")));
+    shortcut->setKey(QKeySequence(nextActive.arg("J")));
     connect(shortcut, SIGNAL(activated()), this, SLOT(moveToNextActiveItem()));
 
     shortcut = new QShortcut(this);
