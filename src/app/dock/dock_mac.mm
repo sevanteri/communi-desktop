@@ -26,50 +26,60 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MESSAGEDATA_H
-#define MESSAGEDATA_H
+#include "dock.h"
+#include <Cocoa/Cocoa.h>
 
-#include <QList>
-#include <QString>
-#include <QDateTime>
-#include <IrcMessage>
-
-class MessageData
+@interface InterfaceStyleListener : NSObject
 {
-public:
-    MessageData();
+    Dock* dock;
+}
+@property (assign) Dock* dock;
+@end
 
-    static IrcMessage::Type effectiveType(const IrcMessage* msg);
+static InterfaceStyleListener* dock_listener = 0;
 
-    bool isEmpty() const;
-    bool isEvent() const;
-    bool isError() const;
+@implementation InterfaceStyleListener
+@synthesize dock;
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        [[NSDistributedNotificationCenter defaultCenter] addObserver: self
+            selector:@selector(receiveThemeNote:)
+            name:@"AppleInterfaceThemeChangedNotification" object:nil];
+    }
+    return self;
+}
 
-    QList<MessageData> getEvents() const;
-    bool canMerge(const MessageData& other) const;
-    void merge(const MessageData& other);
-    void initFrom(IrcMessage* message);
+- (void) receiveThemeNote: (NSNotification*) note
+{
+    Q_UNUSED(note);
+    dock->init();
+    QMetaObject::invokeMethod(dock, "updateTray");
+}
+@end
 
-    QString format() const;
-    void setFormat(const QString& format);
+void Dock::init()
+{
+    if (!dock_listener) {
+        dock_listener = [[InterfaceStyleListener alloc] init];
+        [dock_listener setDock: this];
+    }
 
-    QString nick() const;
-    QByteArray data() const;
-    QDateTime timestamp() const;
-    IrcMessage::Type type() const;
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    NSString* style = [defaults stringForKey:@"AppleInterfaceStyle"];
+    if (style) {
+        d.alertIcon.addFile(":/images/tray/white/blue.png");
+        d.onlineIcon.addFile(":/images/tray/white/transparent.png");
+        d.offlineIcon.addFile(":/images/tray/white/black.png");
+    } else {
+        d.alertIcon.addFile(":/images/tray/black/blue.png");
+        d.onlineIcon.addFile(":/images/tray/black/black.png");
+        d.offlineIcon.addFile(":/images/tray/black/transparent.png");
+    }
+}
 
-private:
-    struct Private {
-        bool own;
-        bool error;
-        bool reply;
-        QString nick;
-        QString format;
-        QByteArray data;
-        QDateTime timestamp;
-        IrcMessage::Type type;
-        QList<MessageData> events;
-    } d;
-};
-
-#endif // MESSAGEDATA_H
+void Dock::uninit()
+{
+    [dock_listener release];
+}

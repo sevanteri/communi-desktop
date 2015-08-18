@@ -45,6 +45,10 @@ class Dock : public QObject
 
 public:
     explicit Dock(MainWindow* window);
+    ~Dock();
+
+    void init();
+    void uninit();
 
 public slots:
     void alert(IrcMessage* message);
@@ -61,6 +65,7 @@ private slots:
 
     void onWindowActivated();
     void onMuteToggled(bool mute);
+    void onOfflineToggled(bool offline);
     void onTrayActivated(QSystemTrayIcon::ActivationReason reason);
     void onTrayMessageClicked();
 
@@ -74,7 +79,8 @@ private:
         MainWindow* window;
         QSystemTrayIcon* tray;
         QtDockTile* dock;
-        QAction* mute;
+        QAction* muteAction;
+        QAction* offlineAction;
         Alert* alert;
         bool active;
     } d;

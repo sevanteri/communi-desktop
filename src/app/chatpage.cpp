@@ -133,6 +133,7 @@ QByteArray ChatPage::saveSettings() const
     QVariantMap settings;
     settings.insert("theme", d.theme.name());
     settings.insert("timestamp", d.timestamp);
+    settings.insert("tree", d.treeWidget->saveState());
 
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
@@ -146,6 +147,9 @@ void ChatPage::restoreSettings(const QByteArray& data)
     QDataStream in(data);
     in >> settings;
 
+    if (settings.contains("tree"))
+        d.treeWidget->restoreState(settings.value("tree").toByteArray());
+
     d.timestamp = settings.value("timestamp", "[hh:mm:ss]").toString();
     setTheme(settings.value("theme", "Cute").toString());
 }
@@ -155,7 +159,6 @@ QByteArray ChatPage::saveState() const
     QVariantMap state;
     state.insert("splitter", QSplitter::saveState());
     state.insert("views", d.splitView->saveState());
-    state.insert("tree", d.treeWidget->saveState());
 
     QVariantMap timestamps;
     foreach (TextDocument* doc, d.documents) {
@@ -209,7 +212,7 @@ bool ChatPage::commandFilter(IrcCommand* command)
         const QString cmd = command->parameters().value(0);
         const QStringList params = command->parameters().mid(1);
         if (cmd == "CLEAR") {
-            d.splitView->currentView()->textDocument()->clear();
+            d.splitView->currentView()->textBrowser()->clear();
             return true;
         } else if (cmd == "CLOSE") {
             IrcBuffer* buffer = currentBuffer();
@@ -304,7 +307,7 @@ void ChatPage::addConnection(IrcConnection* connection)
         d.treeWidget->setCurrentBuffer(serverBuffer);
 
     connection->installCommandFilter(this);
-    if (!connection->isActive() && connection->isEnabled())
+    if (!connection->isActive() && connection->isEnabled() && !QSettings().value("offline", false).toBool())
         connection->open();
 
     PluginLoader::instance()->connectionAdded(connection);

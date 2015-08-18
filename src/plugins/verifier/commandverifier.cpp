@@ -42,14 +42,13 @@ CommandVerifier::CommandVerifier(IrcConnection* connection) : QObject(connection
 
 int CommandVerifier::identify(IrcMessage* message) const
 {
-    if (message->type() == IrcMessage::Private) {
+    if (message->type() == IrcMessage::Private || message->type() == IrcMessage::Notice) {
         QMapIterator<int, IrcCommand*> it(d.commands);
         while (it.hasNext()) {
             IrcMessage* cmd = it.next().value()->toMessage(message->prefix(), message->connection());
-            if (cmd) {
+            if (cmd && cmd->command() == message->command() && cmd->parameters() == message->parameters()) {
                 cmd->deleteLater();
-                if (cmd->toData() == QString::fromUtf8(message->toData()))
-                    return it.key();
+                return it.key();
             }
         }
     }
@@ -58,7 +57,23 @@ int CommandVerifier::identify(IrcMessage* message) const
 
 bool CommandVerifier::messageFilter(IrcMessage* message)
 {
-    if (message->type() == IrcMessage::Pong) {
+    if (d.commands.isEmpty())
+        return false;
+
+    if (message->isOwn() && (message->type() == IrcMessage::Private || message->type() == IrcMessage::Notice)) {
+        IrcNetwork* network = message->network();
+        if (network && network->isCapable("echo-message")) {
+            int id = identify(message);
+            if (id > 0) {
+                IrcCommand* command = d.commands.take(id);
+                if (command) {
+                    emit verified(id);
+                    command->deleteLater();
+                    return true;
+                }
+            }
+        }
+    } else if (message->type() == IrcMessage::Pong) {
         QString arg = static_cast<IrcPongMessage*>(message)->argument();
         if (arg.startsWith("communi/")) {
             bool ok = false;
@@ -78,10 +93,20 @@ bool CommandVerifier::messageFilter(IrcMessage* message)
 
 bool CommandVerifier::commandFilter(IrcCommand* command)
 {
-    if (command->type() == IrcCommand::Message) {
+    if (!command->parent() && (command->type() == IrcCommand::Message ||
+                               command->type() == IrcCommand::Notice ||
+                               command->type() == IrcCommand::CtcpAction)) {
         command->setParent(this); // take ownership
         d.id = qMax(1, d.id + 1); // overflow -> 1
         d.commands.insert(d.id, command);
+
+        IrcConnection* connection = command->connection();
+        if (connection) {
+            IrcNetwork* network = connection->network();
+            if (network && network->isCapable("echo-message"))
+                return false;
+        }
+
         d.connection->sendCommand(command);
         d.connection->sendData("PING communi/" + QByteArray::number(d.id));
         return true;
