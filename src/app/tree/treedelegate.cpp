@@ -53,14 +53,20 @@ bool TreeDelegate::isTransient() const
     return d.transient;
 }
 
+static QSize treeHeaderSize()
+{
+    // QMacStyle wants a QHeaderView that is a child of QTreeView :/
+    QTreeView tree;
+    QStyleOptionHeader opt;
+    return qApp->style()->sizeFromContents(QStyle::CT_HeaderSection, &opt, QSize(), tree.header());
+}
+
 QSize TreeDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     QSize sz = QStyledItemDelegate::sizeHint(option, index);
     if (!index.parent().isValid()) {
-        // QMacStyle wants a QHeaderView that is a child of QTreeView :/
-        QTreeView tree;
-        QStyleOptionHeader opt;
-        QSize ss = qApp->style()->sizeFromContents(QStyle::CT_HeaderSection, &opt, QSize(), tree.header());
+        static const QSize headerSize = treeHeaderSize();
+        QSize ss = headerSize;
         TreeHeader* header = TreeHeader::instance(const_cast<QWidget*>(option.widget));
         if (header->minimumSize().isValid())
             ss = ss.expandedTo(header->minimumSize());
@@ -81,12 +87,14 @@ void TreeDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, 
     if (!index.parent().isValid()) {
         TreeHeader* header = TreeHeader::instance(const_cast<QWidget*>(option.widget));
         header->setText(index.data(Qt::DisplayRole).toString());
-        header->setIcon(index.data(Qt::DecorationRole).value<QIcon>());
         header->setState(option.state);
         header->setGeometry(option.rect);
         painter->translate(option.rect.topLeft());
         header->render(painter);
         painter->translate(-option.rect.topLeft());
+        QStyle* style = option.widget->style();
+        QIcon icon = index.data(Qt::DecorationRole).value<QIcon>();
+        style->drawItemPixmap(painter, option.rect.translated(2, 0), Qt::AlignLeft | Qt::AlignVCenter, icon.pixmap(16, 16));
     } else {
         bool hilite = index.data(TreeRole::Highlight).toBool();
         if (hilite)
@@ -110,7 +118,11 @@ void TreeDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, 
 
         int num = index.data(TreeRole::Badge).toInt();
         if (num > 0) {
-            TreeBadge* badge = TreeBadge::instance(const_cast<QWidget*>(option.widget));
+            static QPointer<QWidget> inactiveParent;
+            if (!hilite && !inactiveParent)
+                inactiveParent = new QWidget(const_cast<QWidget*>(option.widget), Qt::Window);
+
+            TreeBadge* badge = TreeBadge::instance(hilite ? const_cast<QWidget*>(option.widget) : inactiveParent.data());
             badge->setNum(num);
             badge->setHighlighted(hilite);
 

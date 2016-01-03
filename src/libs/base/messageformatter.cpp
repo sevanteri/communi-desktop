@@ -155,6 +155,9 @@ MessageData MessageFormatter::formatMessage(IrcMessage* msg)
         case IrcMessage::WhoReply:
             fmt = formatWhoReplyMessage(static_cast<IrcWhoReplyMessage*>(msg));
             break;
+        case IrcMessage::Error:
+            fmt = formatErrorMessage(static_cast<IrcErrorMessage*>(msg));
+            break;
         default:
             break;
     }
@@ -217,10 +220,11 @@ QString MessageFormatter::styledText(const QString& text, Style style) const
     if (style & Bold)
         fmt = tr("<b>%1</b>").arg(fmt);
     if (style & (Color | Dim)) {
-        const int h = qHash(text) % 359;
-        const int s = (style & Dim) ? 0 : 102;
-        const int l = 134;
-        fmt = tr("<font color='%2'>%1</font>").arg(fmt, QColor::fromHsl(h, s, l).name());
+        int bucket = (qHash(text) % 9) + 1;
+        if (style & Dim) {
+            bucket = 0;
+        }
+        fmt = tr("<span class='nick%2'>%1</span>").arg(fmt, QString::number(bucket));
     }
     return fmt;
 }
@@ -361,10 +365,17 @@ QString MessageFormatter::formatNumericMessage(IrcNumericMessage* msg)
     if (msg->isComposed() || msg->flags() & IrcMessage::Implicit)
         return QString();
 
+    // if you change this, change formatErrorMessage too
     if (Irc::codeToString(msg->code()).startsWith("ERR_"))
         return tr("[ERROR] %1").arg(formatText(MID_(1)));
 
     return tr("[%1] %2").arg(msg->code()).arg(d.textFormat->toHtml(MID_(1)));
+}
+
+QString MessageFormatter::formatErrorMessage(IrcErrorMessage* msg)
+{
+    // if you change this, change ERR_ in formatNumericMessage too
+    return tr("[ERROR] %1").arg(msg->error());
 }
 
 QString MessageFormatter::formatPartMessage(IrcPartMessage* msg)
@@ -445,6 +456,8 @@ QString MessageFormatter::formatWhoisMessage(IrcWhoisMessage* msg)
     emit formatted(formatClass(tr("[WHOIS] %1 is %2@%3 (%4)").arg(msg->nick(), msg->ident(), msg->host(), formatText(msg->realName())), msg));
     emit formatted(formatClass(tr("[WHOIS] %1 is connected via %2 (%3)").arg(msg->nick(), msg->server(), msg->info()), msg));
     emit formatted(formatClass(tr("[WHOIS] %1 is connected since %2 (idle %3)").arg(msg->nick(), msg->since().toString(), formatDuration(msg->idle())), msg));
+    if (!msg->awayReason().isEmpty())
+        emit formatted(formatClass(tr("[WHOIS] %1 is away: %2").arg(msg->nick(), msg->awayReason()), msg));
     if (!msg->account().isEmpty())
         emit formatted(formatClass(tr("[WHOIS] %1 is logged in as %2").arg(msg->nick(), msg->account()), msg));
     if (!msg->address().isEmpty())
@@ -513,6 +526,9 @@ MessageData MessageFormatter::formatClass(const QString& format, IrcMessage* msg
         case IrcMessage::Numeric:
             if (IrcNumericMessage* m = static_cast<IrcNumericMessage*>(msg))
                 cls = Irc::codeToString(m->code()).startsWith("ERR_") ? "notice" : "event";
+            break;
+        case IrcMessage::Error:
+            cls = "notice";
             break;
         default:
             break;

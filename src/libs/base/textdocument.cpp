@@ -95,6 +95,7 @@ TextDocument::TextDocument(IrcBuffer* buffer) : QTextDocument(buffer)
     d.rebuild = -1;
     d.lowlight = -1;
     d.clone = false;
+    d.batch = false;
     d.buffer = buffer;
     d.visible = false;
 
@@ -260,6 +261,12 @@ void TextDocument::append(const MessageData& data)
         else if (TextBlockMessageData* block = static_cast<TextBlockMessageData*>(lastBlock().userData()))
             last = block->data;
 
+        if (!last.isEmpty() && data.type() != IrcMessage::Unknown && data.timestamp().date() != last.timestamp().date()) {
+            MessageData dc;
+            dc.setFormat(QString("<p class='date'>%1</p>").arg(data.timestamp().date().toString(Qt::ISODate)));
+            append(dc);
+        }
+
         MessageData msg = data;
         const bool merge = last.canMerge(data);
         if (merge) {
@@ -273,7 +280,7 @@ void TextDocument::append(const MessageData& data)
             else
                 d.uc = 0;
         }
-        if (d.dirty == 0 || d.visible) {
+        if (!d.batch && (d.dirty == 0 || d.visible)) {
             QTextCursor cursor(this);
             cursor.beginEditBlock();
             if (merge) {
@@ -285,7 +292,7 @@ void TextDocument::append(const MessageData& data)
             insert(cursor, msg);
             cursor.endEditBlock();
         } else {
-            if (d.dirty <= 0) {
+            if (!d.batch && d.dirty <= 0) {
                 d.dirty = startTimer(delay);
                 delay += 1000;
             }
@@ -416,8 +423,17 @@ void TextDocument::receiveMessage(IrcMessage* message)
 {
     if (message->type() == IrcMessage::Batch) {
         IrcBatchMessage* batch = static_cast<IrcBatchMessage*>(message);
-        foreach (IrcMessage* msg, batch->messages()) {
+        d.batch = true;
+        foreach (IrcMessage* msg, batch->messages())
             receiveMessage(msg);
+        d.batch = false;
+        if (!d.queue.isEmpty()) {
+            if (d.visible) {
+                flush();
+            } else if (d.dirty <= 0) {
+                d.dirty = startTimer(delay);
+                delay += 1000;
+            }
         }
     } else {
         MessageData data = d.formatter->formatMessage(message);
@@ -444,7 +460,8 @@ void TextDocument::receiveMessage(IrcMessage* message)
                     IrcConnection* connection = message->connection();
                     const bool contains = content.contains(connection->nickName(), Qt::CaseInsensitive);
                     if (contains) {
-                        addHighlight(totalCount() - 1);
+                        if (connection->isConnected())
+                            addHighlight(totalCount() - 1);
                         if (unseen)
                             emit messageHighlighted(message);
                     } else if (unseen && priv && connection->isConnected()) {
@@ -515,6 +532,10 @@ void TextDocument::insert(QTextCursor& cursor, const MessageData& data)
 
     QTextBlockFormat format = cursor.blockFormat();
     format.setLineHeight(125, QTextBlockFormat::ProportionalHeight);
+    if (data.type() == IrcMessage::Unknown)
+        format.setAlignment(Qt::AlignRight);
+    else
+        format.setAlignment(Qt::AlignLeft);
     cursor.setBlockFormat(format);
 }
 

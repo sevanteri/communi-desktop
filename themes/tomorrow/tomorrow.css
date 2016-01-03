@@ -1,10 +1,10 @@
-a { color: #005fff; }
+a { color: #81a2be; }
 .timestamp { color: #808080; font-size: small }
 .date { color: #808080; font-size: small }
 
 .message { white-space: pre-wrap; }
-.notice { color: #b23e3e; }
-.action { color: #b232b2; }
+.notice { color: #de935f; }
+.action { color: #b294bb; }
 .event { color: #808080; }
 
 .bold { font-weight: bold; }
@@ -12,79 +12,79 @@ a { color: #005fff; }
 .underline { text-decoration: underline; }
 .line-through { text-decoration: line-through; }
 
-.gray { color: #606060; }
-.lightgray { color: #808080; }
+.gray { color: #969896; /* 03 */ }
+.lightgray { color: #b4b7b4; /* 04 */ }
 
-/* http://ethanschoonover.com/solarized */
-.blue { color: #268bd2; }
-.green { color: #859900;}
-.red { color: #dc322f;}
-.brown { color: #cb4b16;}
-.purple { color: #6c71c4;}
-.orange { color: #cb4b16;}
-.yellow { color: #b58900;}
-.lightgreen { color: #859900;}
-.cyan { color: #2aa198;}
-.lightcyan { color: #2aa198;}
-.lightblue { color: #268bd2;}
-.pink { color: #6c71c4;}
+/* http://chriskempson.github.io/base16/#tomorrow */
+.blue { color: #81a2be; /* 0D */ }
+.green { color: #b5bd68; /* 0B */ }
+.red { color: #cc6666; /* 08 */ }
+.brown { color: #a3685a; /* 0F */ }
+.purple { color: #b294bb; /* 0E */ }
+.orange { color: #de935f; /* 09 */ }
+.yellow { color: #f0c674; /* 0A */ }
+.lightgreen { color: #b5bd68; /* 0B */ }
+.cyan { color: #8abeb7; /* 0C */ }
+.lightcyan { color: #8abeb7; /* 0C */ }
+.lightblue { color: #81a2be; /* 0D */ }
+.pink { color: #b294bb; /* 0E */ }
 
-.nick0 { color: hsl(0, 0%, 60%); }
-.nick1 { color: hsl(0, 50%, 60%); }
-.nick2 { color: hsl(40, 50%, 60%); }
-.nick3 { color: hsl(80, 50%, 60%); }
-.nick4 { color: hsl(120, 50%, 60%); }
-.nick5 { color: hsl(160, 50%, 60%); }
-.nick6 { color: hsl(200, 50%, 60%); }
-.nick7 { color: hsl(240, 50%, 60%); }
-.nick8 { color: hsl(280, 50%, 60%); }
-.nick9 { color: hsl(320, 50%, 60%); }
+.nick0 { color: #b4b7b4; /* 04 */ }
+.nick1 { color: #ffffff; /* 07 */ }
+.nick2 { color: #cc6666; /* 08 */ }
+.nick3 { color: #de935f; /* 09 */ }
+.nick4 { color: #f0c674; /* 0A */ }
+.nick5 { color: #b5bd68; /* 0B */ }
+.nick6 { color: #8abeb7; /* 0C */ }
+.nick7 { color: #81a2be; /* 0D */ }
+.nick8 { color: #b294bb; /* 0E */ }
+.nick9 { color: #a3685a; /* 0F */ }
 
 TextBrowser, TextInput {
     border: none;
-    color: #eeeeec;
-    background: #333333;
-    selection-color: #eeeeec;
-    selection-background-color: #3465a4;
+    color: #e0e0e0;
+    background: #282a2e;
+    selection-color: #282a2e;
+    selection-background-color: #b4b7b4;
 }
 
 SplitView {
-    background: #24282a;
+    background: #282a2e;
 }
 
 TextInput {
-    background: #363939;
-    border-top: 1px solid #24282a;
+    background: #373b41;
+    border-top: 1px solid #1d1f21;
 }
 
 TreeWidget, ListView {
     border: none;
-    background: #363939;
-    selection-background-color: #3465a4;
+    background: #1d1f21;
+    selection-background-color: #ff0000;
 }
 
 TreeWidget::item {
-    color: #eeeeec;
+    color: #b4b7b4;
     height: 20px;
 }
 
 ListView::item {
-    color: #eeeeec;
+    color: #b4b7b4;
     height: 20px;
 }
 
 TreeWidget::item:off, TreeHeader::section:off, ListView:off {
-    color: #929390;
+    color: #969896;
 }
 
 TreeWidget::item:selected, TreeWidget::item:selected:hover {
-    color: #eeeeec;
-    background-color: #3465a4;
+    color: #c5c8c6;
+    background-color: #282a2e;
 }
 
 ListView::item:selected, ListView::item:selected:hover {
-    color: #eeeeec;
-    background-color: #3465a4;
+    color: #c5c8c6;
+    background-color: #282a2e;
 }
 
 TreeWidget::item:!selected:hover, ListView::item:!selected:hover {
@@ -94,9 +94,9 @@ TreeWidget::item:!selected:hover, ListView::item:!selected:hover {
 TreeHeader::section, TitleBar::section {
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                       stop: 0 #414848, stop: 1 #343535);
-    color: #eeeeec;
+    color: #e0e0e0;
     border: 4px solid transparent;
-    border-bottom: 1px solid #24282a;
+    border-bottom: 1px solid #1d1f21;
 }
 
 TextLowlight {
@@ -105,14 +105,14 @@ TextLowlight {
 }
 
 TextHighlight {
-    border: 1px solid #3465a4;
-    background-color: rgba(52,101,164,52);
+    /* border: 1px solid #cc6666; */
+    background-color: rgba(221,102,102,40);
 }
 
 TextShadow {
     max-height: 5px;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #222222, stop: 1 transparent);
+                                      stop: 0 #1d1f21, stop: 1 transparent);
 }
 
 TreeSpinner {
@@ -144,16 +144,16 @@ TreeIndicator:on {
 }
 
 TreeBadge {
-    color: #eeeeec;
+    color: #e0e0e0;
     margin: 3px;
     font-size: 9px;
     border-radius: 5px;
-    background: #414848;
+    background: #373b41;
 }
 
 TreeBadge:on {
-    color: #eeeeec;
-    background: #3465a4;
+    color: #e0e0e0;
+    background: #cc6666;
 }
 
 TreeHeader {
@@ -165,11 +165,11 @@ TreeHeader::section:on {
 }
 
 TreeWidget::item:on {
-    color: #3e83db;
+    color: #b4b7b4;
 }
 
 TitleBar > QTextEdit {
-    border-bottom: 1px solid #24282a;
+    border-bottom: 1px solid #1d1f21;
 }
 
 QSplitter::handle {
@@ -179,7 +179,7 @@ QSplitter::handle {
 }
 
 QToolButton {
-    border: 1px solid #24282a;
+    border: 1px solid #1d1f21;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                       stop: 0 #414848, stop: 1 #343535);
 }
@@ -194,16 +194,16 @@ QToolButton::menu-indicator {
 }
 
 TitleBar {
-    color: #eeeeec;
+    color: #e0e0e0;
     min-height: 20px;
 }
 
 TitleBar > QTextEdit {
-    color: #eeeeec;
-    background: #363939;
-    selection-color: #eeeeec;
-    selection-background-color: #3465a4;
-    border: 1px solid #24282a;
+    color: #e0e0e0;
+    background: #373b41;
+    selection-color: #e0e0e0;
+    selection-background-color: #373b41;
+    border: 1px solid #1d1f21;
     border-bottom-color: transparent;
 }
 
@@ -218,8 +218,8 @@ QToolButton#menu {
 }
 
 QToolButton#menu:hover {
-    border-left-color: #24282a;
-    border-bottom-color: #24282a;
+    border-left-color: #1d1f21;
+    border-bottom-color: #1d1f21;
 }
 
 QToolButton#menu:pressed {
@@ -228,16 +228,16 @@ QToolButton#menu:pressed {
 }
 
 QMenu {
-    color: #eeeeec;
-    background: #555753;
+    color: #e0e0e0;
+    background: #373b41;
 }
 
 QMenu::item:selected:!disabled {
-    background: #3465a4;
+    background: #81a2be;
 }
 
 QMenu::item:disabled {
-    color: #929390;
+    color: #969896;
 }
 
 QMenu::separator {
@@ -282,16 +282,16 @@ AbstractFinder > QToolButton {
 }
 
 AbstractFinder > QLineEdit {
-    color: #eeeeec;
-    background: #363939;
-    selection-color: #eeeeec;
-    selection-background-color: #3465a4;
-    border: 1px solid #24282a;
+    color: #e0e0e0;
+    background: #373b41;
+    selection-color: #e0e0e0;
+    selection-background-color: #373b41;
+    border: 1px solid #1d1f21;
     border-bottom-color: transparent;
 }
 
 AbstractFinder[error="true"] > QLineEdit {
-    background-color: #bb4444;
+    background-color: #cc6666;
 }
 
 AbstractFinder > QToolButton {
@@ -304,7 +304,7 @@ AbstractFinder > QToolButton#prev {
 
 AbstractFinder[error="true"] > QToolButton#prev {
     image: url(gray:up.png);
-    background-color: #363939;
+    background-color: #373b41;
 }
 
 AbstractFinder > QToolButton#next {
@@ -313,9 +313,30 @@ AbstractFinder > QToolButton#next {
 
 AbstractFinder[error="true"] > QToolButton#next {
     image: url(gray:down.png);
-    background-color: #363939;
+    background-color: #373b41;
 }
 
 ConnectPage QPlainTextEdit[error="true"] {
-    background-color: #ff8080;
+    background-color: #cc6666;
+}
+
+QScrollBar {
+    background-color: #24282a;
+    width: 8px;
+    border: none;
+}
+
+QScrollBar::handle {
+    background-color: #373b41;
+    border: 1px solid #1d1f21;
+    border-radius: 4px;
+    min-height: 16px;
+}
+
+QScrollBar::up-arrow, QScrollBar::down-arrow,
+QScrollBar::add-line, QScrollBar::sub-line,
+QScrollBar::add-page, QScrollBar::sub-page {
+    height: 0px;
+    background-color: #24282a;
+    border: none;
 }

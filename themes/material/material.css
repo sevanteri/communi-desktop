@@ -1,0 +1,273 @@
+/* https://www.google.com/design/spec/style/color.html */
+
+a { color: #e91e63; /* pink */ }
+.timestamp { color: #607d8b; /* blue grey */ font-size: small }
+.date { color: #607d8b; /* blue grey */ font-size: small }
+
+.message { white-space: pre-wrap; }
+.notice { color: #795548; /* brown */ }
+.action { color: #9c27b0; /* purple */ }
+.event { color: #607d8b; /* blue gray */ }
+
+.bold { font-weight: bold; }
+.italic { font-style: italic; }
+.underline { text-decoration: underline; }
+.line-through { text-decoration: line-through; }
+
+.gray { color: #9e9e9e; }
+.lightgray { color: #bdbdbd; }
+
+.blue { color: #2196f3; }
+.green { color: #4caf50;}
+.red { color: #f44336;}
+.brown { color: #795548;}
+.purple { color: #9c27b0;}
+.orange { color: #ff9800;}
+.yellow { color: #ffeb3b;}
+.lightgreen { color: #8bc34a;}
+.cyan { color: #00bcd4;}
+.lightcyan { color: #26c6da;}
+.lightblue { color: #03a9f4;}
+.pink { color: #e91e63;}
+
+.nick0 { color: #607d8b; /* blue grey */ }
+.nick1 { color: #f44336; /* red */ }
+.nick2 { color: #9c27b0; /* purple */ }
+.nick3 { color: #673ab7; /* deep purple */ }
+.nick4 { color: #3f51b5; /* indigo */ }
+.nick5 { color: #2196f3; /* blue */ }
+.nick6 { color: #009688; /* teal */ }
+.nick7 { color: #4caf50; /* green */ }
+.nick8 { color: #ff5722; /* deep orange */ }
+.nick9 { color: #795548; /* brown */ }
+
+TextInput, TextBrowser {
+    font-family: "Open Sans";
+    font-size: 14px;
+    border: none;
+    color: #000;
+    background: #fff;
+    selection-background-color: #c5cae9;
+}
+
+TextInput {
+    border-top: 5px solid #fff;
+    border-bottom: 5px solid #fff;
+}
+
+TreeWidget, ListView {
+    font-family: "Open Sans";
+    font-size: 14px;
+    border: none;
+    background: #fff;
+    selection-background-color: #c5cae9;
+}
+
+TextBrowser, ListView {
+    border-top: 15px solid #fff;
+}
+
+TreeWidget::item, ListView::item {
+    min-height: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+TitleBar > QTextEdit {
+    border-bottom: 1px solid palette(mid);
+}
+
+TextLowlight {
+    background-color: #e8eaf6;
+}
+
+TextHighlight {
+    background-color: #f8bbd0;
+}
+
+TextShadow {
+    max-height: 0px;
+}
+
+TreeSpinner {
+    border: none;
+    background: transparent;
+    min-width: 16px;
+    max-width: 16px;
+    min-height: 16px;
+    max-height: 16px;
+    background-image: url(white:spinner.png);
+}
+
+TreeIndicator {
+    min-width: 6px;
+    max-width: 6px;
+    min-height: 6px;
+    max-height: 6px;
+    border-radius: 2px;
+    border: 1px solid #fff;
+}
+
+TreeIndicator:off {
+    border: 1px solid rgba(255,255,255,38%);
+    background: #3f51b5;
+}
+
+TreeIndicator:on {
+    background: #ff8888;
+    border-color: #ff8888;
+}
+
+TreeBadge {
+    color: rgba(0,0,0,38%);
+    margin-top: 8px;
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-bottom: 8px;
+    font-size: 9px;
+}
+
+TreeBadge:active {
+    color: #ff4081;
+}
+
+TreeHeader {
+    min-height: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+TreeHeader:section {
+    border: none;
+    color: #fff;
+    background: #3f51b5;
+}
+
+TreeHeader::section:off {
+    color: rgba(255,255,255,38%);
+}
+
+TreeWidget::item:off, ListView::item:off {
+    color: rgba(0,0,0,38%);
+}
+
+TreeWidget::item:on {
+    color: #ff4081;
+}
+
+ChatPage::handle:horizontal {
+    border-top: 30px solid #3f51b5;
+}
+
+QSplitter::handle:horizontal {
+    width: 20px;
+    background: #fff;
+}
+
+QToolButton {
+    border: 1px solid palette(mid);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 palette(light), stop: 1 palette(button));
+}
+
+QToolButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 palette(dark), stop: 1 palette(light));
+}
+
+QToolButton::menu-indicator {
+    image: none;
+}
+
+TitleBar {
+    color: #fff;
+    min-height: 20px;
+    margin: 5px;
+}
+
+TitleBar:section {
+    border: none;
+    color: #fff;
+    background: #3f51b5;
+}
+
+QToolButton#menu {
+    min-width: 20px;
+    max-width: 20px;
+    min-height: 20px;
+    max-height: 20px;
+    border-color: transparent;
+    background-color: transparent;
+    image: url(white:menu.png);
+}
+
+QToolButton#menu:hover {
+    border-left-color: #fff;
+    border-bottom-color: #fff;
+}
+
+QToolButton#menu:pressed {
+    background-color: #5c6bc0;
+}
+
+Overlay {
+    background: transparent; /*rgba(228, 228, 228, 40%)*/
+}
+
+OverlayButton {
+    border: none;
+    background: transparent;
+    min-width: 48px;
+    max-width: 48px;
+    min-height: 48px;
+    max-height: 48px;
+    image: url(white:refresh.png);
+}
+
+OverlayButton:pressed {
+    border: none;
+    background: transparent;
+    image: url(black:refresh.png);
+}
+
+AbstractFinder > QToolButton {
+    min-width: 20px;
+    max-width: 20px;
+    min-height: 20px;
+    max-height: 20px;
+}
+
+AbstractFinder > QLineEdit {
+    border: 1px solid palette(mid);
+    border-bottom-color: transparent;
+}
+
+AbstractFinder[error="true"] > QLineEdit {
+    background-color: #ff4081;
+}
+
+AbstractFinder > QToolButton {
+    border-left-color: transparent;
+}
+
+AbstractFinder > QToolButton#prev {
+    image: url(black:up.png);
+}
+
+AbstractFinder[error="true"] > QToolButton#prev {
+    image: url(white:up.png);
+    background-color: palette(button);
+}
+
+AbstractFinder > QToolButton#next {
+    image: url(black:down.png);
+}
+
+AbstractFinder[error="true"] > QToolButton#next {
+    image: url(white:down.png);
+    background-color: palette(button);
+}
+
+ConnectPage QPlainTextEdit[error="true"] {
+    background-color: #ff4081;
+}

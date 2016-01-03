@@ -195,6 +195,7 @@ void MainWindow::addConnection(IrcConnection* connection)
     }
 
     connection->setReconnectDelay(15);
+    connection->network()->setRequestedCapabilities(Irc::supportedCapabilities());
 
     IrcCommandQueue* queue = new IrcCommandQueue(connection);
     queue->setConnection(connection);
@@ -399,5 +400,6 @@ void MainWindow::editConnection(IrcConnection* connection)
     page->setUserName(connection->userName());
     page->setDisplayName(connection->displayName());
     page->setPassword(connection->password());
+    page->setSaslMechanism(connection->saslMechanism());
     push(page);
 }

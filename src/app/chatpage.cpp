@@ -48,6 +48,7 @@
 #include <IrcCommandParser>
 #include <IrcBufferModel>
 #include <IrcConnection>
+#include <QFontDatabase>
 #include <QStringList>
 #include <QScrollBar>
 #include <IrcChannel>
@@ -117,6 +118,11 @@ void ChatPage::setTheme(const QString& theme)
 {
     if (!d.theme.isValid() || d.theme.name() != theme) {
         d.theme = ThemeLoader::instance()->theme(theme);
+
+        QString font = d.theme.font();
+        if (!font.isEmpty())
+            QFontDatabase::addApplicationFont(QDir(d.theme.path()).filePath(font));
+
         foreach (TextDocument* doc, d.documents)
             setupDocument(doc);
         foreach (BufferView* view, d.splitView->views())
@@ -285,7 +291,11 @@ void ChatPage::addConnection(IrcConnection* connection)
 {
     IrcBufferModel* bufferModel = new IrcBufferModel(connection);
     bufferModel->setSortMethod(Irc::SortByTitle);
-    bufferModel->setMonitorEnabled(true);
+
+    // Freenode has disabled MONITOR even though it's still listed in RPL_ISUPPORT:
+    // http://elemental-ircd.com/security/e50b0d59-f3c5-4472-a3cd-e2e07731417c/
+    //bufferModel->setMonitorEnabled(true);
+
     // give bouncers 2 seconds to start joining channels, otherwise a
     // non-bouncer connection is assumed and model state is restored
     bufferModel->setJoinDelay(2);
